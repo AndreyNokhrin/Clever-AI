@@ -1,1 +1,133 @@
-
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "CleverAI Parcel Enrichment Schema",
+  "description": "Validated parcel record — from raw APN to outreach-ready landowner profile",
+  "version": "1.0.0",
+  "type": "object",
+  "required": ["parcel_id", "apn", "owner", "outreach_status"],
+  "properties": {
+    "parcel_id": {
+      "type": "string",
+      "description": "Unique Clever AI parcel identifier",
+      "example": "CA-LA-2024-001234"
+    },
+    "apn": {
+      "type": "string",
+      "description": "Assessor Parcel Number from county records",
+      "example": "300-17026K"
+    },
+    "address": {
+      "type": "object",
+      "properties": {
+        "street": { "type": "string", "example": "3727 Sulphur Springs Rd" },
+        "city": { "type": "string", "example": "Murfreesboro" },
+        "state": { "type": "string", "example": "TN" },
+        "zip": { "type": "string", "example": "37129" },
+        "county": { "type": "string", "example": "Rutherford County" }
+      }
+    },
+    "parcel_data": {
+      "type": "object",
+      "properties": {
+        "acreage": { "type": "number", "example": 31.35 },
+        "zoning": { "type": "string", "example": "RM - Medium Density Residential" },
+        "zoning_code": { "type": "string", "example": "RM" },
+        "land_use": { "type": "string", "example": "Vacant Residential" },
+        "estimated_value_per_acre": { "type": "number", "example": 50000 },
+        "total_estimated_value": { "type": "number", "example": 1567500 },
+        "wetlands_flag": { "type": "boolean", "example": false },
+        "floodplain_flag": { "type": "boolean", "example": false },
+        "entitlement_status": {
+          "type": "string",
+          "enum": ["unentitled", "pre-application", "in-process", "approved"],
+          "example": "unentitled"
+        },
+        "developable_acres": { "type": "number", "example": 28.0 },
+        "estimated_lot_yield": { "type": "integer", "example": 65 }
+      }
+    },
+    "owner": {
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "example": "John Smith" },
+        "entity_type": {
+          "type": "string",
+          "enum": ["individual", "llc", "trust", "corporation", "partnership"],
+          "example": "individual"
+        },
+        "years_owned": { "type": "integer", "example": 12 },
+        "contact": {
+          "type": "object",
+          "properties": {
+            "phone_primary": { "type": "string", "example": "+16155550001" },
+            "phone_mobile": { "type": "string", "example": "+16155550002" },
+            "email": { "type": "string", "example": "john.smith@email.com" },
+            "mailing_address": { "type": "string", "example": "123 Main St, Nashville TN 37201" },
+            "contact_verified": { "type": "boolean", "example": true },
+            "contact_graph_score": {
+              "type": "number",
+              "description": "Proprietary Clever AI contact quality score — 2x performance vs alternatives",
+              "minimum": 0,
+              "maximum": 100,
+              "example": 87
+            }
+          }
+        }
+      }
+    },
+    "outreach_status": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": ["queued", "contacted", "hot", "warm", "cold", "dnc", "offer_pending", "under_contract"],
+          "example": "hot"
+        },
+        "deal_score": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100,
+          "example": 78
+        },
+        "calls_attempted": { "type": "integer", "example": 2 },
+        "calls_connected": { "type": "integer", "example": 1 },
+        "sms_sent": { "type": "integer", "example": 1 },
+        "emails_sent": { "type": "integer", "example": 2 },
+        "last_contact_date": { "type": "string", "format": "date", "example": "2026-03-15" },
+        "next_follow_up_date": { "type": "string", "format": "date", "example": "2026-03-16" },
+        "follow_up_action": {
+          "type": "string",
+          "enum": ["immediate_human_review", "schedule_callback", "sms_followup", "email_sequence", "do_not_contact"],
+          "example": "immediate_human_review"
+        },
+        "owner_interest_notes": {
+          "type": "string",
+          "example": "Owner open to selling. Mentioned divorce as motivation. Asking ~$11.9M. Requested callback with acquisition team."
+        },
+        "estimated_pipeline_value": { "type": "number", "example": 1567500 }
+      }
+    },
+    "market": {
+      "type": "object",
+      "properties": {
+        "market_id": { "type": "string", "example": "nashville-tn" },
+        "client": { "type": "string", "example": "Lennar" },
+        "division": { "type": "string", "example": "Lennar Nashville" },
+        "campaign_id": { "type": "string", "example": "LEN-NASH-2026-Q1" },
+        "analyst_assigned": { "type": "string", "example": "Connor Gries" }
+      }
+    },
+    "metadata": {
+      "type": "object",
+      "properties": {
+        "created_at": { "type": "string", "format": "date-time" },
+        "updated_at": { "type": "string", "format": "date-time" },
+        "data_sources": {
+          "type": "array",
+          "items": { "type": "string" },
+          "example": ["county_assessor", "clever_ai_contact_graph", "zillow_avm", "fema_flood_maps"]
+        }
+      }
+    }
+  }
+}
